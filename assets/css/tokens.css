@@ -1,0 +1,141 @@
+/* IVL Executive Luxury Glass — tokens recoloured to the CBQ brand palette (www.cbq.com.qa): crimson #A40046, indigo #1E175B, light grey #F4F5F6. Light default in this local copy, dark via data-theme */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #120e38;
+  --foreground: #f4f5f6;
+  --card: rgba(30, 23, 91, 0.72);
+  --card-foreground: #f4f5f6;
+  --popover: #1a1450;
+  --popover-foreground: #f4f5f6;
+  --primary: #e2457f;
+  --primary-foreground: #120e38;
+  --gold-light: #f07aa3;
+  --gold-deep: #a40046;
+  --gold-gradient-start: #c4005a;
+  --gold-gradient-mid: #a40046;
+  --gold-gradient-end: #7a0034;
+  --on-gold: #ffffff;
+  --secondary: #241d66;
+  --secondary-foreground: #f4f5f6;
+  --muted: #241d66;
+  --muted-foreground: #bdb8cc;
+  --accent: rgba(226, 69, 127, 0.12);
+  --accent-foreground: #f59ab9;
+  --border: rgba(244, 245, 246, 0.12);
+  --input: rgba(244, 245, 246, 0.2);
+  --ring: #e2457f;
+  --success: #34c46a;
+  --warning: #f59e0b;
+  --destructive: #ff5a5a;
+  --info: #4da8ff;
+  --success-soft: rgba(52, 196, 106, 0.14);
+  --warning-soft: rgba(245, 158, 11, 0.14);
+  --destructive-soft: rgba(255, 90, 90, 0.14);
+  --info-soft: rgba(77, 168, 255, 0.14);
+  --chart-1: #e2457f;
+  --chart-2: #4da8ff;
+  --chart-3: #b79a56;
+  --chart-4: #34c46a;
+  --chart-5: #afa9b2;
+  --chart-6: #f59e0b;
+  --sidebar: #0e0b2e;
+  --sidebar-foreground: #e8e6f0;
+  --sidebar-border: rgba(244, 245, 246, 0.08);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --glow-gold: 0 0 24px rgba(226, 69, 127, 0.2);
+  --backdrop: rgba(8, 6, 28, 0.6);
+  --canvas-glow: radial-gradient(1200px 600px at 0% 0%, rgba(164, 0, 70, 0.16), transparent 60%);
+  --code-bg: #0e0b2e;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --background: #f4f5f6;
+  --foreground: #212529;
+  --card: rgba(255, 255, 255, 0.86);
+  --card-foreground: #212529;
+  --popover: #ffffff;
+  --popover-foreground: #212529;
+  --primary: #a40046;
+  --primary-foreground: #ffffff;
+  --gold-light: #8c003c;
+  --gold-deep: #6e0030;
+  --secondary: #e8e9ee;
+  --secondary-foreground: #212529;
+  --muted: #e8e9ee;
+  --muted-foreground: #586a76;
+  --accent: rgba(164, 0, 70, 0.08);
+  --accent-foreground: #7a0034;
+  --border: rgba(30, 23, 91, 0.14);
+  --input: rgba(30, 23, 91, 0.24);
+  --ring: #a40046;
+  --success: #17803a;
+  --warning: #a16207;
+  --destructive: #bc0000;
+  --info: #0068c9;
+  --success-soft: rgba(37, 178, 74, 0.1);
+  --warning-soft: rgba(161, 98, 7, 0.1);
+  --destructive-soft: rgba(188, 0, 0, 0.08);
+  --info-soft: rgba(0, 129, 248, 0.08);
+  --chart-1: #a40046;
+  --chart-2: #1e175b;
+  --chart-3: #0081f8;
+  --chart-4: #25b24a;
+  --chart-5: #b79a56;
+  --chart-6: #586a76;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #212529;
+  --sidebar-border: rgba(30, 23, 91, 0.1);
+  --shadow-glass: 0 8px 28px rgba(30, 23, 91, 0.08);
+  --glow-gold: 0 0 24px rgba(164, 0, 70, 0.16);
+  --backdrop: rgba(30, 23, 91, 0.35);
+  --canvas-glow: radial-gradient(1200px 600px at 0% 0%, rgba(164, 0, 70, 0.06), transparent 60%);
+  --code-bg: #ecedf1;
+}
+
+:root {
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --gold-gradient: linear-gradient(135deg, var(--gold-gradient-start), var(--gold-gradient-mid) 45%, var(--gold-gradient-end));
+
+  --space-xs: 2px;
+  --space-sm: 4px;
+  --space-md: 8px;
+  --space-lg: 12px;
+  --space-xl: 16px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+
+  --radius-sm: 7px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 17px;
+  --radius-pill: 999px;
+
+  --sidebar-w: 264px;
+  --sidebar-rail: 72px;
+  --trace-w: 340px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Top bar in CBQ crimson #A40046 (both themes). Colours only: the values below apply inside the top bar and nowhere else. */
+.topbar {
+  --card: #a40046;
+  --border: rgba(255, 255, 255, 0.18);
+  --input: rgba(255, 255, 255, 0.35);
+  --foreground: #ffffff;
+  --gold-light: #ffffff;
+  --muted: rgba(255, 255, 255, 0.14);
+  --muted-foreground: #ffffff;
+  --secondary: rgba(255, 255, 255, 0.14);
+  --secondary-foreground: #ffffff;
+  --accent: rgba(255, 255, 255, 0.18);
+  --accent-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #a40046;
+  --gold-gradient: linear-gradient(135deg, #ffffff, #ffffff);
+  --on-gold: #a40046;
+  color: #ffffff;
+}

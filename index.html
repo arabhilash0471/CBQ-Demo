@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>CBQ ERP Connect Demo</title>
+<meta name="description" content="Interactive solution demo of the ERP Connector Platform for The Commercial Bank (P.S.Q.C.), prepared by Innoval Digital Solutions. All data is illustrative.">
+<link rel="icon" type="image/png" href="assets/img/ivl-mark.png">
+<script>
+  // Apply the saved theme before paint so nothing flashes. Light is the default in this local copy.
+  (function () {
+    try {
+      var t = localStorage.getItem("cbq-demo-theme");
+      if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    } catch (e) { /* storage unavailable: keep light */ }
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<!-- Lucide is bundled locally so icons render even where CDNs are blocked. -->
+<script src="assets/vendor/lucide-0.460.0.min.js" defer></script>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+    <div class="brand">
+      <img class="logo logo-dark" src="assets/img/ivl-logo.png" alt="Innoval Digital Solutions" width="120" height="40">
+      <img class="logo logo-light" src="assets/img/ivl-logo-light.png" alt="Innoval Digital Solutions" width="126" height="40">
+      <img class="mark" src="assets/img/ivl-mark.png" alt="Innoval" width="36" height="36">
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-foot">
+      Prepared for The Commercial Bank (P.S.Q.C.)<br>
+      RFP: ERP Connector Platform, V.10.7<br>
+      All data in this demo is illustrative.
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Open navigation"><i data-lucide="menu"></i></button>
+      <button class="icon-btn hide-sm" id="collapseBtn" type="button" aria-label="Collapse sidebar"><i data-lucide="panel-left"></i></button>
+      <div class="crumb" id="crumb"></div>
+      <div class="sp"></div>
+      <button class="search-btn" id="searchBtn" type="button" aria-label="Search pages and steps">
+        <i data-lucide="search"></i><span class="txt">Jump to page or step</span><kbd>Ctrl K</kbd>
+      </button>
+      <button class="icon-btn" id="traceBtn" type="button" aria-label="Show behind-the-scenes trace" aria-pressed="true"><i data-lucide="activity"></i></button>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch to light theme"><i data-lucide="sun"></i></button>
+      <button class="icon-btn" id="notifBtn" type="button" aria-label="Notifications"><i data-lucide="bell"></i><span class="badge" id="notifCount">3</span></button>
+      <button class="btn sm hide-sm" id="resetBtn" type="button"><i data-lucide="rotate-ccw"></i>Reset demo</button>
+      <button class="icon-btn" id="tourBtn" type="button" aria-label="Start guided presenter tour"><i data-lucide="compass"></i></button>
+      <button class="persona-btn" id="personaBtn" type="button" aria-haspopup="menu" aria-label="Switch persona"></button>
+    </header>
+    <div class="workspace" id="workspace">
+      <main class="stage" id="stage" tabindex="-1"></main>
+      <aside class="trace" id="trace" aria-label="Behind the scenes"></aside>
+    </div>
+  </div>
+</div>
+<div id="overlay"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<noscript><p style="padding:24px">This demo needs JavaScript.</p></noscript>
+<script type="module" src="assets/js/main.js"></script>
+</body>
+</html>
