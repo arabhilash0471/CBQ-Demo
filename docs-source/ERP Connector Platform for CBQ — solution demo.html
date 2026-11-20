@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ERP Connector Platform for CBQ — solution demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --paper:#F4F6F8; --panel:#FFFFFF; --panel-2:#EEF1F4; --ink:#1D232B; --ink-2:#4A5562; --ink-3:#6E7885;
+  --line:#D6DCE3; --maroon:#8A1538; --maroon-soft:#F6E7EC; --sap:#0A6ED1; --sap-soft:#E6F1FB; --sap-bar:#354A5F;
+  --ok:#11734F; --ok-soft:#E3F3EC; --warn:#9A5B00; --warn-soft:#FBF0DC; --bad:#B42318; --bad-soft:#FBE7E5;
+  --on-accent:#FFFFFF; --trace:#18202A; --trace-ink:#D9E1EA; --trace-dim:#8C99A8;
+  --sans:"IBM Plex Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --paper:#12171D; --panel:#1A2129; --panel-2:#222B35; --ink:#E6EBF0; --ink-2:#B3BDC8; --ink-3:#8D98A5;
+    --line:#2E3946; --maroon:#E0708F; --maroon-soft:#3A1E28; --sap:#5AA9F0; --sap-soft:#16293B; --sap-bar:#24364A;
+    --ok:#4CC18F; --ok-soft:#143327; --warn:#E8A94A; --warn-soft:#352813; --bad:#F2877D; --bad-soft:#3A1C1A;
+    --on-accent:#1A0E12; --trace:#0C1116; --trace-ink:#D9E1EA; --trace-dim:#7F8C9A;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#12171D; --panel:#1A2129; --panel-2:#222B35; --ink:#E6EBF0; --ink-2:#B3BDC8; --ink-3:#8D98A5;
+  --line:#2E3946; --maroon:#E0708F; --maroon-soft:#3A1E28; --sap:#5AA9F0; --sap-soft:#16293B; --sap-bar:#24364A;
+  --ok:#4CC18F; --ok-soft:#143327; --warn:#E8A94A; --warn-soft:#352813; --bad:#F2877D; --bad-soft:#3A1C1A;
+  --on-accent:#1A0E12; --trace:#0C1116; --trace-ink:#D9E1EA; --trace-dim:#7F8C9A;
+}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;height:100%;background:var(--paper);color:var(--ink);font:15px/1.5 var(--sans)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--sap);outline-offset:2px}
+.app{display:grid;grid-template-rows:auto 1fr;height:100%}
+.top{display:flex;align-items:center;gap:16px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+.mark{width:34px;height:34px;border-radius:8px;background:var(--maroon);display:grid;place-items:center;color:var(--on-accent);font-weight:700;font-size:13px;letter-spacing:.02em}
+.top h1{font-size:17px;margin:0;font-weight:600}
+.top p{margin:0;color:var(--ink-3);font-size:13px}
+.top .sp{flex:1}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:7px 14px;border-radius:6px;font-size:14px}
+.btn:hover{background:var(--panel-2)}
+.btn.primary{background:var(--maroon);border-color:var(--maroon);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.sap{background:var(--sap);border-color:var(--sap);color:var(--on-accent)}
+.btn{text-decoration:none;white-space:nowrap;display:inline-block}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr) 360px;min-height:0}
+.rail{border-right:1px solid var(--line);background:var(--panel);overflow:auto;padding:14px 10px}
+.rail h2{font-size:12px;color:var(--ink-3);font-weight:600;margin:14px 10px 6px}
+.rail a{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:6px;color:var(--ink-2);text-decoration:none;font-size:14px;line-height:1.35}
+.rail a:hover{background:var(--panel-2)}
+.rail a[aria-current="page"]{background:var(--maroon-soft);color:var(--ink);font-weight:600}
+.rail .n{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:12px;color:var(--ink-3)}
+.rail a[aria-current="page"] .n{border-color:var(--maroon);color:var(--maroon)}
+.rail a.done .n{background:var(--ok);border-color:var(--ok);color:#fff}
+.rail .who{display:block;font-size:12px;color:var(--ink-3);font-weight:400}
+.stage{overflow:auto;padding:22px 28px 40px}
+.narr{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px}
+.narr h2{margin:0 0 4px;font-size:22px;font-weight:600}
+.narr p{margin:0;color:var(--ink-2);max-width:70ch}
+.narr .sp{flex:1}
+.surface{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}
+.surface-head{display:flex;align-items:center;gap:10px;padding:9px 14px;font-size:13px;font-weight:600;color:#fff}
+.surface-head .tag{font-weight:400;opacity:.85}
+.s-sap .surface-head{background:var(--sap-bar)}
+.s-portal .surface-head{background:var(--maroon)}
+.s-admin .surface-head{background:#3B2A4F}
+.s-ops .surface-head{background:#24313F}
+.surface-body{padding:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.field label{display:block;font-size:12px;color:var(--ink-3);margin-bottom:3px}
+.field .v{border:1px solid var(--line);border-radius:6px;padding:7px 10px;background:var(--panel-2);font-size:14px;min-height:36px}
+.checks{list-style:none;margin:0;padding:0}
+.checks li{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.checks li:last-child{border-bottom:none}
+.dot{width:18px;height:18px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:11px;color:#fff;background:var(--line)}
+.dot.ok{background:var(--ok)} .dot.bad{background:var(--bad)} .dot.wait{background:var(--warn)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{text-align:left;font-weight:600;font-size:12px;color:var(--ink-3);padding:8px 10px;border-bottom:1px solid var(--line);background:var(--panel-2)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.ref{font-family:var(--mono);font-size:12.5px;color:var(--ink-2)}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.p-ok{background:var(--ok-soft);color:var(--ok)} .p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-bad{background:var(--bad-soft);color:var(--bad)} .p-info{background:var(--sap-soft);color:var(--sap)} .p-neutral{background:var(--panel-2);color:var(--ink-2)}
+.toolbar{display:flex;gap:8px;align-items:center;margin:0 0 12px;flex-wrap:wrap}
+.toolbar .sp{flex:1}
+.note{border-left:3px solid var(--maroon);background:var(--maroon-soft);padding:10px 14px;border-radius:0 6px 6px 0;font-size:14px;color:var(--ink);margin-top:14px}
+.note.sapn{border-color:var(--sap);background:var(--sap-soft)}
+.kpi{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--panel)}
+.kpi b{display:block;font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
+.kpi span{font-size:13px;color:var(--ink-3)}
+.lifecycle{display:flex;gap:4px;align-items:center}
+.lifecycle i{width:22px;height:6px;border-radius:3px;background:var(--line);display:block}
+.lifecycle i.on{background:var(--ok)} .lifecycle i.bad{background:var(--bad)} .lifecycle i.cur{background:var(--warn)}
+.modal-back{position:fixed;inset:0;background:rgba(10,14,20,.5);display:grid;place-items:center;z-index:20}
+.modal{background:var(--panel);border-radius:12px;width:min(420px,92vw);padding:22px;border:1px solid var(--line)}
+.modal h3{margin:0 0 6px;font-size:18px}
+.otp{display:flex;gap:8px;margin:16px 0}
+.otp span{width:44px;height:52px;border:1.5px solid var(--line);border-radius:8px;display:grid;place-items:center;font:600 22px var(--mono)}
+.trace{background:var(--trace);color:var(--trace-ink);display:flex;flex-direction:column;min-height:0}
+.trace header{padding:14px 16px 10px;border-bottom:1px solid #2A3542}
+.trace header h2{margin:0;font-size:14px;font-weight:600}
+.trace header p{margin:2px 0 0;font-size:12px;color:var(--trace-dim)}
+.cid{font-family:var(--mono);font-size:12px;color:#F2B8C8;margin-top:6px;word-break:break-all}
+.zones{display:flex;gap:4px;padding:10px 16px;border-bottom:1px solid #2A3542;flex-wrap:wrap}
+.z{font-size:11px;padding:3px 7px;border-radius:4px;background:#222C38;color:var(--trace-dim);transition:background .25s,color .25s}
+.z.hot{background:#8A1538;color:#fff}
+.log{list-style:none;margin:0;padding:8px 0;overflow:auto;flex:1}
+.log li{padding:8px 16px;border-bottom:1px solid #1F2833;font-size:12.5px;line-height:1.45}
+.log li.new{animation:flash 1.2s ease-out}
+@keyframes flash{from{background:#2B3A4C}to{background:transparent}}
+.log .t{font-family:var(--mono);color:var(--trace-dim);font-size:11.5px}
+.log .hop{color:#9CC7F2;font-weight:600}
+.log .m{display:block;color:var(--trace-ink)}
+.log .d{display:block;color:var(--trace-dim);font-family:var(--mono);font-size:11.5px}
+.log .empty{color:var(--trace-dim);border:none}
+/* architecture */
+.arch svg{width:100%;height:auto;display:block}
+.arch .box{cursor:pointer}
+.arch .box rect{fill:var(--panel);stroke:var(--line);stroke-width:1.5}
+.arch .box:hover rect,.arch .box.sel rect{stroke:var(--maroon);stroke-width:2.5}
+.arch .box text{fill:var(--ink);font:500 13px var(--sans)}
+.arch .zone rect{fill:var(--panel-2);stroke:var(--line);stroke-dasharray:4 4}
+.arch .zone text{fill:var(--ink-3);font:600 12px var(--sans)}
+.arch .flow{stroke:var(--ink-3);stroke-width:1.6;fill:none;marker-end:url(#ah)}
+.arch .flow.hot{stroke:var(--maroon);stroke-width:3}
+.arch .opt rect{stroke-dasharray:5 4}
+.arch .opt text{fill:var(--ink-3)}
+.detail{margin-top:14px;border:1px solid var(--line);border-radius:8px;padding:14px 16px;background:var(--panel)}
+.detail h3{margin:0 0 4px;font-size:16px}
+.detail p{margin:0;color:var(--ink-2)}
+/* gantt */
+.gantt{display:grid;grid-template-columns:230px repeat(9,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:13px;background:var(--panel)}
+.gantt > div{padding:8px 10px;border-bottom:1px solid var(--line)}
+.gantt .h{background:var(--panel-2);font-weight:600;color:var(--ink-3);font-size:12px;text-align:center}
+.gantt .lab{font-weight:500}
+.gantt .bar{padding:8px 0}
+.gantt .bar i{display:block;height:18px;background:var(--maroon);opacity:.85}
+.gantt .bar i.s{border-radius:4px 0 0 4px;margin-left:4px}.gantt .bar i.e{border-radius:0 4px 4px 0;margin-right:4px}
+.gantt .bar.cbq i{background:var(--sap)}
+.gantt .bar.ms i{background:transparent;border:2px solid var(--ok);height:18px;width:18px;margin:0 auto;border-radius:50%}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--ink-2);margin-top:10px;flex-wrap:wrap}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{border:1px solid var(--line);border-radius:8px;padding:16px;background:var(--panel)}
+.card h3{margin:0 0 6px;font-size:16px}
+.card p{margin:0;color:var(--ink-2);font-size:14px}
+.layers{display:grid;gap:8px}
+.layer{display:grid;grid-template-columns:190px 1fr;gap:14px;border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--panel)}
+.layer b{font-weight:600}
+.layer span{color:var(--ink-2);font-size:14px}
+.foot{font-size:12px;color:var(--ink-3);margin-top:22px}
+.shell.wide{grid-template-columns:250px minmax(0,1fr)}.shell.wide .trace{display:none}
+@media (max-width:1180px){.shell{grid-template-columns:220px minmax(0,1fr)}.trace{display:none}}
+@media (max-width:760px){.shell{grid-template-columns:1fr}.rail{display:flex;overflow-x:auto;padding:8px;border-right:none;border-bottom:1px solid var(--line)}.rail h2{display:none}.rail a{flex:none}.rail .who{display:none}.grid2,.grid3,.cards{grid-template-columns:1fr}.stage{padding:16px}.gantt{font-size:11px;grid-template-columns:120px repeat(9,1fr)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="mark" aria-hidden="true">CBQ</div>
+    <div><h1>ERP Connector Platform</h1><p>Solution demo prepared by Innoval for The Commercial Bank (P.S.Q.C.) · illustrative data</p></div>
+    <div class="sp"></div>
+    <button class="btn" id="resetBtn" type="button">Reset demo</button>
+  </header>
+  <div class="shell">
+    <nav class="rail" id="rail" aria-label="Demo sections"></nav>
+    <main class="stage" id="stage"></main>
+    <aside class="trace" aria-label="Behind the scenes">
+      <header>
+        <h2>Behind the scenes</h2>
+        <p>Every call, as the platform logs it</p>
+        <div class="cid" id="cid"></div>
+      </header>
+      <div class="zones" id="zones"></div>
+      <ul class="log" id="log"></ul>
+    </aside>
+  </div>
+</div>
+<div id="modalRoot"></div>
+<script>
+(function(){
+"use strict";
+const STEPS=[
+  {id:"onboard",n:1,title:"Customer registers",who:"Customer onboarding portal"},
+  {id:"approve",n:2,title:"CBQ approves",who:"CBQ administration portal"},
+  {id:"activate",n:3,title:"Connector activated",who:"Inside SAP"},
+  {id:"pay",n:4,title:"Payment run sent",who:"Inside SAP — maker"},
+  {id:"release",n:5,title:"Checker and CBQ approval",who:"SAP checker, CBQ OTP"},
+  {id:"status",n:6,title:"Status written back",who:"Inside SAP"},
+  {id:"recon",n:7,title:"Statements and reconciliation",who:"Platform and SAP"},
+  {id:"ops",n:8,title:"CBQ operations view",who:"CBQ operations console"}
+];
+const VIEWS=[
+  {id:"architecture",title:"Architecture and integration"},
+  {id:"security",title:"Security and deployment"},
+  {id:"plan",title:"Implementation plan"},
+  {id:"why",title:"Why this approach"}
+];
+const ZONES=["Customer SAP","CBQ API gateway","Platform (CBQ cloud)","CBQ data zone","CBQ Connected Banking"];
+const fmt=n=>n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const PAYMENTS0=[
+  {doc:"2000004512",vendor:"Gulf Steel Supplies WLL",iban:"QA47QNBA000000000123456789012",amt:48250.00},
+  {doc:"2000004513",vendor:"Doha Logistics Co.",iban:"QA21CBQA000000000987654321098",amt:12900.00},
+  {doc:"2000004514",vendor:"Al Wakra Facilities Management",iban:"QA62DOHB000000000456789123456",amt:7450.00},
+  {doc:"2000004515",vendor:"Qatar Packaging Industries",iban:"QA90QIIB000000000321654987321",amt:23600.00},
+  {doc:"2000004516",vendor:"Lusail IT Services",iban:"QA15CBQA000000000555444333222",amt:5180.00}
+];
+const LIFE=["Sent","Validated","At CBQ","Approval","Completed"];
+let S;
+function fresh(){
+  return {onboard:"draft",approved:false,activated:false,testOk:false,
+    pays:PAYMENTS0.map((p,i)=>({...p,sel:i<5,stage:-1,status:"Proposed",ref:"",bad:false})),
+    sent:false,released:false,otp:false,progress:0,stmt:false,recon:false,offboard:false,
+    cid:"",log:[],audit:[],done:{}};
+}
+function newCid(){const h="0123456789abcdef";let s="";for(let i=0;i<32;i++){s+=h[Math.floor(Math.random()*16)];if([7,11,15,19].includes(i))s+="-";}return s;}
+function now(){const d=new Date();return d.toTimeString().slice(0,8);}
+function trace(hop,msg,detail,zones){
+  S.log.unshift({t:now(),hop,msg,detail:detail||"",zones:zones||[],fresh:true});
+  renderTrace();
+}
+function audit(actor,action){S.audit.unshift({t:now(),actor,action});}
+function renderTrace(){
+  document.getElementById("cid").textContent=S.cid?("Correlation ID  "+S.cid):"No request yet";
+  const hot=S.log[0]?S.log[0].zones:[];
+  document.getElementById("zones").innerHTML=ZONES.map((z,i)=>`<span class="z${hot.includes(i)?" hot":""}">${esc(z)}</span>`).join("");
+  const el=document.getElementById("log");
+  if(!S.log.length){el.innerHTML='<li class="empty">Start the walkthrough. Each action appears here with the hop it took and the control applied.</li>';return;}
+  el.innerHTML=S.log.map(e=>`<li class="${e.fresh?"new":""}"><span class="t">${e.t}</span> <span class="hop">${esc(e.hop)}</span><span class="m">${esc(e.msg)}</span>${e.detail?`<span class="d">${esc(e.detail)}</span>`:""}</li>`).join("");
+  S.log.forEach(e=>e.fresh=false);
+}
+function route(){
+  const h=(location.hash||"").slice(1);
+  return [...STEPS,...VIEWS].some(x=>x.id===h)?h:"onboard";
+}
+function renderRail(cur){
+  const r=document.getElementById("rail");
+  r.innerHTML=`<h2>End-to-end walkthrough</h2>`+STEPS.map(s=>`<a href="#${s.id}" class="${S.done[s.id]?"done":""}" ${cur===s.id?'aria-current="page"':""}><span class="n">${S.done[s.id]?"✓":s.n}</span><span>${esc(s.title)}<span class="who">${esc(s.who)}</span></span></a>`).join("")+
+  `<h2>Platform</h2>`+VIEWS.map(v=>`<a href="#${v.id}" ${cur===v.id?'aria-current="page"':""}><span class="n">·</span><span>${esc(v.title)}</span></a>`).join("");
+}
+function nextOf(id){const i=STEPS.findIndex(s=>s.id===id);return i>=0&&i<STEPS.length-1?STEPS[i+1].id:(id==="ops"?"architecture":null);}
+function narr(title,text,id,canNext){
+  const nx=nextOf(id);
+  return `<div class="narr"><div><h2>${esc(title)}</h2><p>${text}</p></div><div class="sp"></div>${nx?`<a class="btn ${canNext?"primary":""}" href="#${nx}">Next step</a>`:""}</div>`;
+}
+function surface(kind,head,tag,body){return `<div class="surface s-${kind}"><div class="surface-head">${esc(head)}<span class="tag">${esc(tag)}</span></div><div class="surface-body">${body}</div></div>`;}
+function f(label,val){return `<div class="field"><label>${esc(label)}</label><div class="v">${val}</div></div>`;}
+function pill(text,kind){return `<span class="pill p-${kind}">${esc(text)}</span>`;}
+
+/* ---------- steps ---------- */
+const R={};
+R.onboard=()=>{
+  const st=S.onboard;
+  const body=`<div class="grid2">
+    ${f("Company","Al Noor Trading W.L.L.")}${f("Commercial registration","CR 145789")}
+    ${f("CBQ customer ID","CORP-0081245")}${f("Net Banking administrator","r.alkuwari (verified)")}
+    ${f("ERP","SAP S/4HANA 2022, on-premises")}${f("Banking services","Balance, statements, domestic payments, status")}
+  </div>
+  <h3 style="font-size:15px;margin:18px 0 8px">Accounts to link</h3>
+  <table><tr><th>Account</th><th>Currency</th><th>Purpose</th><th></th></tr>
+  <tr><td class="ref">QA58 CBQA 0000 0000 1102 3344 5566 7</td><td>QAR</td><td>Operating account, payments</td><td>${pill("Selected","info")}</td></tr>
+  <tr><td class="ref">QA31 CBQA 0000 0000 1102 3344 9900 1</td><td>QAR</td><td>Collections, statements only</td><td>${pill("Selected","info")}</td></tr></table>
+  <div class="toolbar" style="margin-top:16px"><div class="sp"></div>
+  ${st==="draft"?`<button class="btn primary" data-a="submitOnboard">Submit for CBQ approval</button>`:pill(S.approved?"Approved by CBQ":"Submitted, awaiting CBQ approval",S.approved?"ok":"warn")}</div>`;
+  return narr("A corporate customer applies online","The customer picks its ERP, links CBQ accounts and chooses services. Eligibility is checked against CBQ’s records, not re-entered.","onboard",st!=="draft")+
+    surface("portal","CBQ ERP Connect","Customer onboarding portal",body)+
+    `<div class="note">CBQ configures which ERPs, services and accounts are offered. The portal reuses CBQ identity and Net Banking credentials; no new passwords are created.</div>`;
+};
+R.approve=()=>{
+  const ready=S.onboard!=="draft";
+  const ck=(t,ok)=>`<li><span class="dot ${ok?"ok":"wait"}">${ok?"✓":"…"}</span>${esc(t)}</li>`;
+  const body=!ready?`<p style="color:var(--ink-3)">No pending requests. Submit the registration in step 1 first.</p>`:
+  `<table><tr><th>Request</th><th>Customer</th><th>ERP</th><th>Submitted</th><th>Status</th></tr>
+  <tr><td class="ref">ONB-2026-0042</td><td>Al Noor Trading W.L.L.</td><td>SAP S/4HANA</td><td>Today</td><td>${S.approved?pill("Approved","ok"):pill("Pending review","warn")}</td></tr></table>
+  <div class="grid2" style="margin-top:16px"><div><h3 style="font-size:15px;margin:0 0 6px">Automatic eligibility checks</h3><ul class="checks">
+  ${ck("Customer KYC active in CBQ core",true)}${ck("Net Banking administrator verified",true)}${ck("Accounts belong to this customer",true)}${ck("ERP and release supported (S/4HANA 2020+)",true)}${ck("Payment mandate and limits found",true)}</ul></div>
+  <div><h3 style="font-size:15px;margin:0 0 6px">On approval the platform</h3><ul class="checks">
+  <li><span class="dot ${S.approved?"ok":""}">${S.approved?"✓":""}</span>Creates an isolated tenant</li>
+  <li><span class="dot ${S.approved?"ok":""}">${S.approved?"✓":""}</span>Issues a customer connector certificate from CBQ PKI</li>
+  <li><span class="dot ${S.approved?"ok":""}">${S.approved?"✓":""}</span>Releases the signed SAP add-on package</li>
+  <li><span class="dot ${S.approved?"ok":""}">${S.approved?"✓":""}</span>Sends a one-time activation code</li></ul></div></div>
+  <div class="toolbar" style="margin-top:14px"><div class="sp"></div>${S.approved?pill("Tenant TN-0042 created","ok"):`<button class="btn" data-a="rejectInfo">Request more information</button><button class="btn primary" data-a="approveOnboard">Approve</button>`}</div>`;
+  return narr("CBQ reviews and approves","A CBQ officer sees the checks already run and approves in one action. Maker-checker can be enabled for approvals too.","approve",S.approved)+
+    surface("admin","CBQ ERP Connect","CBQ administration portal",body);
+};
+R.activate=()=>{
+  const body=!S.approved?`<p style="color:var(--ink-3)">Waiting for CBQ approval in step 2.</p>`:
+  `<div class="grid2"><div><h3 style="font-size:15px;margin:0 0 6px">Set-up checklist</h3><ul class="checks">
+  <li><span class="dot ok">✓</span>Innoval add-on transports imported (namespace /INNOVAL/)</li>
+  <li><span class="dot ok">✓</span>Connector certificate installed in STRUST</li>
+  <li><span class="dot ok">✓</span>House bank CBQA and accounts mapped</li>
+  <li><span class="dot ok">✓</span>Roles built by the customer from add-on authorisation objects: maker, viewer, administrator</li>
+  <li><span class="dot ${S.activated?"ok":"wait"}">${S.activated?"✓":"…"}</span>Activation code entered</li>
+  <li><span class="dot ${S.testOk?"ok":""}">${S.testOk?"✓":""}</span>Connection test</li></ul></div>
+  <div>${f("Activation code",S.activated?"••••-••••-7KQ2 (used)":"Q8MD-41TZ-7KQ2")}<div style="height:10px"></div>${f("Platform endpoint","https://erpconnect.cbq.qa/api/v1 (via CBQ API gateway)")}
+  <div class="toolbar" style="margin-top:14px">${!S.activated?`<button class="btn sap" data-a="activate">Activate</button>`:""}${S.activated&&!S.testOk?`<button class="btn sap" data-a="testConn">Test connection</button>`:""}${S.testOk?pill("Connected: balance QAR 1,284,560.40","ok"):""}</div></div></div>`;
+  return narr("The customer’s SAP team activates the connector","Standard SAP transports and the customer’s own Basis team. The add-on stores no banking passwords; it authenticates with a per-customer certificate and short-lived tokens.","activate",S.testOk)+
+    surface("sap","SAP S/4HANA","Transaction /INNOVAL/CBQ_SETUP",body)+
+    `<div class="note sapn">Supported: SAP ECC 6.0 EHP 7 SP 20 and above, and SAP S/4HANA 2020 and above, on-premises or private cloud (incl. RISE). TLS 1.2 required.</div>`;
+};
+R.pay=()=>{
+  if(!S.testOk) return narr("Payment run","Activate the connector in step 3 first.","pay",false);
+  const rows=S.pays.map((p,i)=>`<tr><td><input type="checkbox" aria-label="Select ${esc(p.vendor)}" data-sel="${i}" ${p.sel?"checked":""} ${S.sent?"disabled":""}></td><td class="ref">${p.doc}</td><td>${esc(p.vendor)}</td><td class="ref">${p.iban.replace(/(.{4})/g,"$1 ").trim()}</td><td class="num">${fmt(p.amt)}</td><td>${S.sent&&p.sel?pill("Sent to CBQ","info"):pill("Proposed","neutral")}</td></tr>`).join("");
+  const tot=S.pays.filter(p=>p.sel).reduce((a,p)=>a+p.amt,0);
+  const body=`<div class="toolbar"><span>Payment run <b>F110 · 16.11.2026 · ID ALN01</b></span><div class="sp"></div><span>Account balance <b>QAR 1,284,560.40</b> <span style="color:var(--ink-3)">(live from CBQ)</span></span></div>
+  <table><tr><th></th><th>Document</th><th>Vendor</th><th>Beneficiary IBAN</th><th class="num">Amount (QAR)</th><th>Status</th></tr>${rows}
+  <tr><td></td><td></td><td colspan="2"><b>Total selected</b></td><td class="num"><b>${fmt(tot)}</b></td><td></td></tr></table>
+  <div class="toolbar" style="margin-top:14px"><span style="color:var(--ink-3);font-size:13px">Also works for single manual payments posted with F-53.</span><div class="sp"></div>${S.sent?pill("Batch BT-77310 submitted by maker","ok"):`<button class="btn sap" data-a="send" ${tot?"":"disabled"}>Send to CBQ</button>`}</div>`;
+  return narr("A maker sends the SAP payment run to CBQ","Vendor payments from the normal F110 run go to CBQ from inside SAP. No files to download, upload or re-key.","pay",S.sent)+
+    surface("sap","SAP S/4HANA","CBQ Banking cockpit — maker",body);
+};
+R.release=()=>{
+  if(!S.sent) return narr("Approvals","Send the payment run in step 4 first.","release",false);
+  const body=`<ul class="checks">
+    <li><span class="dot ok">✓</span>Maker: f.haddad sent batch BT-77310 (5 payments, QAR ${fmt(S.pays.filter(p=>p.sel).reduce((a,p)=>a+p.amt,0))})</li>
+    <li><span class="dot ${S.released?"ok":"wait"}">${S.released?"✓":"…"}</span>Checker in SAP: m.nasser ${S.released?"released the batch":"to review and release"}</li>
+    <li><span class="dot ${S.otp?"ok":S.released?"wait":""}">${S.otp?"✓":S.released?"…":""}</span>CBQ approval: ${S.otp?"OTP confirmed by CBQ":"amount above STP limit, CBQ asks for OTP"}</li></ul>
+    <div class="toolbar" style="margin-top:14px"><div class="sp"></div>${!S.released?`<button class="btn sap" data-a="release">Release as checker</button>`:""}${S.released&&!S.otp?`<button class="btn primary" data-a="otp">Approve with CBQ OTP</button>`:""}${S.otp?pill("Approved, CBQ is processing","ok"):""}</div>`;
+  return narr("Segregation of duties in SAP, final authority at CBQ","SAP maker-checker runs first. CBQ stays the system of record for authorisation: limits, mandates, OTP or Net Banking approval are CBQ’s own controls, reused, not rebuilt.","release",S.otp)+
+    surface("sap","SAP S/4HANA","CBQ Banking cockpit — checker",body)+
+    `<div class="note">Payments under the customer’s STP threshold go straight through. Others are approved with a CBQ OTP or in CBQ Net Banking. The platform never decides an approval itself.</div>`;
+};
+R.status=()=>{
+  if(!S.otp) return narr("Status","Complete approvals in step 5 first.","status",false);
+  const rows=S.pays.filter(p=>p.sel).map(p=>{
+    const bars=LIFE.map((_,k)=>`<i class="${p.bad&&k===p.stage?"bad":k<=p.stage?(k===p.stage&&k<4&&!p.bad?"cur":"on"):""}"></i>`).join("");
+    const kind=p.bad?"bad":p.status==="Completed"?"ok":"warn";
+    return `<tr><td class="ref">${p.doc}</td><td>${esc(p.vendor)}</td><td class="num">${fmt(p.amt)}</td><td><div class="lifecycle">${bars}</div></td><td>${pill(p.status,kind)}</td><td class="ref">${esc(p.ref)}</td></tr>`;}).join("");
+  const done=S.progress>=5;
+  const body=`<table><tr><th>Document</th><th>Vendor</th><th class="num">Amount</th><th>Lifecycle</th><th>Status</th><th>Bank reference / reason</th></tr>${rows}</table>
+  <div class="toolbar" style="margin-top:14px"><span style="color:var(--ink-3);font-size:13px">Stages: sent, validated, at CBQ, approval, completed.</span><div class="sp"></div>${done?pill("All statuses written back to SAP documents","ok"):`<button class="btn sap" data-a="tick">Refresh status from CBQ</button>`}</div>`;
+  return narr("Status and bank reference flow back to the SAP document","The platform tracks each payment through one state machine and writes the outcome to the original voucher. A rejection comes back with CBQ’s reason code.","status",done)+
+    surface("sap","SAP S/4HANA","CBQ Banking cockpit — status",body);
+};
+R.recon=()=>{
+  if(S.progress<5) return narr("Statements and reconciliation","Finish status updates in step 6 first.","recon",false);
+  const lines=[
+    ["16.11","Gulf Steel Supplies WLL","-48,250.00","CBQ26111600981","Matched","Rule 1: bank reference"],
+    ["16.11","Doha Logistics Co.","-12,900.00","CBQ26111600982","Matched","Rule 1: bank reference"],
+    ["16.11","Al Wakra Facilities Management","-7,450.00","CBQ26111600983","Matched","Rule 1: bank reference"],
+    ["16.11","Qatar Packaging Industries","-23,600.00","CBQ26111600984","Matched","Rule 2: amount, date, beneficiary"],
+    ["16.11","Transfer charges","-20.00","CBQ26111600990","Exception","Bank charge, post to charges account"],
+    ["16.11","Incoming: Al Rayyan Retail","+31,400.00","CBQ26111601102","Unmatched","Receipt, for customer AR clearing"]];
+  const body=`<div class="toolbar"><span>Statement for <span class="ref">QA58 CBQA … 5566 7</span>, 16.11.2026</span><div class="sp"></div>
+  ${S.stmt?pill("camt.053 file ready for SAP","ok"):`<button class="btn primary" data-a="stmt">Retrieve statement from CBQ</button>`}
+  ${S.stmt&&!S.recon?`<button class="btn primary" data-a="recon">Run reconciliation</button>`:""}</div>
+  ${S.stmt?`<table><tr><th>Date</th><th>Description</th><th class="num">Amount (QAR)</th><th>Bank reference</th><th>Result</th><th>How</th></tr>${lines.map(l=>`<tr><td>${l[0]}</td><td>${esc(l[1])}</td><td class="num">${l[2]}</td><td class="ref">${l[3]}</td><td>${S.recon?pill(l[4],l[4]==="Matched"?"ok":l[4]==="Exception"?"warn":"neutral"):pill("Imported","info")}</td><td style="color:var(--ink-3)">${S.recon?esc(l[5]):""}</td></tr>`).join("")}</table>`:`<p style="color:var(--ink-3)">Retrieve today’s statement to continue.</p>`}
+  ${S.recon?`<div class="grid3" style="margin-top:14px"><div class="kpi"><b>4 of 4</b><span>Payments matched automatically</span></div><div class="kpi"><b>1</b><span>Exception in the review queue</span></div><div class="kpi"><b>1</b><span>Receipt passed to SAP for clearing</span></div></div>`:""}`;
+  return narr("Statements in, reconciliation done by rules","The platform pulls the statement from CBQ and matches it against payments it sent. The statement goes to SAP as an ISO 20022 camt.053 file for standard bank statement processing.","recon",S.recon)+
+    surface("portal","CBQ ERP Connect","Platform reconciliation",body)+
+    `<div class="note sapn">In SAP the customer imports the camt.053 file with standard Electronic Bank Statement processing (FF_5 / FEBAN) and its own posting rules. Innoval can help configure this as an optional service.</div>`;
+};
+R.ops=()=>{
+  const sentN=S.pays.filter(p=>p.sel&&S.sent).length;
+  const body=`<div class="grid3">
+    <div class="kpi"><b>99.97%</b><span>Platform availability, 30 days (target 99.5%)</span></div>
+    <div class="kpi"><b>${(1286+sentN).toLocaleString()}</b><span>Payments today, all tenants</span></div>
+    <div class="kpi"><b>410 ms</b><span>CBQ API p95 latency</span></div></div>
+  <div class="grid2" style="margin-top:16px"><div><h3 style="font-size:15px;margin:0 0 6px">Tenants and connectors</h3>
+  <table><tr><th>Tenant</th><th>ERP</th><th>Connector</th><th>Heartbeat</th></tr>
+  <tr><td>Al Noor Trading</td><td>S/4HANA 2022</td><td>1.4.0</td><td>${S.offboard?pill("Offboarded","neutral"):pill(S.testOk?"Live":"Pending","ok")}</td></tr>
+  <tr><td>Pilot customer B</td><td>ECC 6.0 EHP 8</td><td>1.4.0</td><td>${pill("Live","ok")}</td></tr>
+  <tr><td>Pilot customer C</td><td>S/4HANA 2020</td><td>1.3.2</td><td>${pill("Upgrade due","warn")}</td></tr></table></div>
+  <div><h3 style="font-size:15px;margin:0 0 6px">Audit trail of this demo</h3>
+  <table><tr><th>Time</th><th>Actor</th><th>Action</th></tr>${S.audit.length?S.audit.slice(0,7).map(a=>`<tr><td class="ref">${a.t}</td><td>${esc(a.actor)}</td><td>${esc(a.action)}</td></tr>`).join(""):`<tr><td colspan="3" style="color:var(--ink-3)">Actions you take in steps 1–7 appear here.</td></tr>`}</table></div></div>
+  <div class="toolbar" style="margin-top:14px"><span style="color:var(--ink-3);font-size:13px">Audit events are tamper-evident and forwarded to CBQ SIEM.</span><div class="sp"></div>${S.offboard?pill("Access revoked, data export ready","ok"):`<button class="btn" data-a="offboard">Offboard customer</button>`}</div>`;
+  return narr("CBQ sees and controls the whole service","Health, volumes, connector versions and a complete audit trail in one console. Offboarding revokes certificates and tokens at once.","ops",true)+
+    surface("ops","CBQ ERP Connect","Operations console",body);
+};
+
+/* ---------- views ---------- */
+const COMP={
+  sap:["SAP add-on (customer)","ABAP add-on in its own namespace, delivered as transports. Screens inside SAP for payments, approvals, status and balance. Per-customer certificate, no stored banking credentials."],
+  oth:["Other ERPs (on order)","Tally, Zoho Books, Odoo, Microsoft Dynamics and others are built on the same SDK and canonical API, certified with the same test kit, on CBQ’s order."],
+  gw:["CBQ API gateway and WAF","The one entry point. mTLS termination, token validation, rate limits and WAF rules. No data at rest in the DMZ."],
+  portal:["Onboarding and admin portals","Customer registration, eligibility, account linkage, subscriptions; CBQ approvals, configuration, support and offboarding."],
+  hub:["Connector hub and canonical API","One versioned REST API (OpenAPI 3) every connector implements. Tenant resolution, connector version enforcement, heartbeat."],
+  orch:["Payment orchestrator","Validation, idempotency, bulk handling, STP and non-STP routing, and the payment status state machine."],
+  rec:["Reconciliation engine","Tiered matching rules, ERP updates and controlled exception queues."],
+  adapt:["CBQ API adapter","The only component that calls CBQ. Maps canonical to CBQ formats, handles CBQ tokens and error codes. A CBQ API change touches only this."],
+  obs:["Audit and monitoring","Tamper-evident audit to CBQ SIEM; OpenTelemetry traces with one correlation ID on every hop."],
+  data:["Data zone","PostgreSQL (or CBQ standard), Kafka or RabbitMQ, backups. Encrypted at rest; keys in CBQ HSM and vault; row-level tenant isolation."],
+  core:["CBQ Connected Banking and core services","Connected Banking APIs, Net Banking and OTP, identity, PKI, SIEM and PAM. Owned and operated by CBQ."]
+};
+function box(id,x,y,w,h,label,opt){return `<g class="box${opt?" opt":""}" data-c="${id}" tabindex="0" role="button" aria-label="${esc(label)}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="7"/><text x="${x+w/2}" y="${y+h/2+5}" text-anchor="middle">${esc(label)}</text></g>`;}
+R.architecture=()=>{
+  const svg=`<svg viewBox="0 0 1000 470" role="img" aria-label="Logical architecture in five trust zones">
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" style="color:var(--ink-3)"/></marker></defs>
+  <g class="zone"><rect x="10" y="20" width="180" height="430" rx="10"/><text x="24" y="42">Customer environment</text></g>
+  <g class="zone"><rect x="205" y="20" width="150" height="430" rx="10"/><text x="219" y="42">CBQ DMZ</text></g>
+  <g class="zone"><rect x="370" y="20" width="330" height="430" rx="10"/><text x="384" y="42">Platform, CBQ cloud in Qatar</text></g>
+  <g class="zone"><rect x="715" y="20" width="275" height="430" rx="10"/><text x="729" y="42">CBQ data zone and core</text></g>
+  ${box("sap",25,110,150,58,"SAP S/4HANA / ECC")}
+  ${box("oth",25,300,150,58,"Other ERPs (on order)",true)}
+  ${box("gw",220,200,120,70,"API gateway, WAF")}
+  ${box("portal",385,70,300,46,"Onboarding and admin portals")}
+  ${box("hub",385,140,140,58,"Connector hub")}
+  ${box("orch",545,140,140,58,"Payment orchestrator")}
+  ${box("rec",385,225,140,58,"Reconciliation")}
+  ${box("adapt",545,225,140,58,"CBQ API adapter")}
+  ${box("obs",385,315,300,46,"Audit and monitoring")}
+  ${box("data",730,315,245,58,"Database, broker, vault, HSM")}
+  ${box("core",730,140,245,100,"CBQ Connected Banking APIs")}
+  <path class="flow" data-p="1" d="M175,139 C200,139 200,225 220,225"/>
+  <path class="flow" d="M175,329 C200,329 200,250 220,250"/>
+  <path class="flow" data-p="1" d="M340,225 C360,225 365,169 385,169"/>
+  <path class="flow" data-p="1" d="M525,169 L545,169"/>
+  <path class="flow" data-p="1" d="M615,198 L615,225"/>
+  <path class="flow" data-p="1" d="M685,254 C710,254 705,200 730,195"/>
+  <path class="flow" d="M455,198 L455,225"/>
+  <path class="flow" d="M685,338 L730,338"/>
+  <path class="flow" d="M340,215 C362,200 365,100 385,95"/>
+  </svg>`;
+  return narr("Architecture and integration approach","Hub and spoke. Thin connectors in each ERP, all banking logic in one platform on CBQ’s cloud in Qatar, one entry point and one exit point. Select any component.","architecture",true)+
+  `<div class="toolbar"><button class="btn" data-a="path">Highlight payment path</button><span style="color:var(--ink-3);font-size:13px">Dashed outline: built on order through the connector framework.</span></div>
+  <div class="surface arch"><div class="surface-body">${svg}</div></div><div class="detail" id="detail"><h3>Select a component</h3><p>Each box explains its role and the control it carries.</p></div>
+  <div class="cards" style="margin-top:14px">
+  <div class="card"><h3>One canonical API</h3><p>Every connector speaks the same versioned API. Adding an ERP never changes the hub, the security model or the CBQ integration.</p></div>
+  <div class="card"><h3>One CBQ adapter</h3><p>Only the platform calls CBQ’s Connected Banking APIs, through one adapter. A CBQ API change is made once.</p></div></div>`;
+};
+R.security=()=>{
+  const L=[["Identity and access","CBQ identity platform and SSO for portal users; ERP users mapped to CBQ channel users; MFA; role-based access with segregation of duties."],
+    ["Connector trust","Per-customer certificate from CBQ PKI, mTLS through the CBQ gateway, short-lived OAuth tokens, signed packages, no stored banking credentials."],
+    ["Payment authority","CBQ limits, mandates, OTP and Net Banking approval stay with CBQ. Idempotency keys stop duplicate payments; uncertain outcomes are never auto-retried."],
+    ["Data protection","TLS 1.2+ in transit; encryption at rest with keys in CBQ HSM and vault; tenant row-level isolation; data minimised to references, status and audit."],
+    ["Audit and monitoring","Tamper-evident audit to CBQ SIEM; one correlation ID from ERP voucher to CBQ transaction to statement line."],
+    ["Assurance","Independent VAPT before every delivery, secure SDLC with code and dependency scanning, CBQ third-party risk assessment, remote support only through CBQ PAM."]];
+  return narr("Security and deployment considerations","CBQ’s controls are reused, not duplicated. Everything runs on CBQ-provided cloud infrastructure in Qatar.","security",true)+
+  `<div class="layers">${L.map(l=>`<div class="layer"><b>${esc(l[0])}</b><span>${esc(l[1])}</span></div>`).join("")}</div>
+  <h3 style="font-size:16px;margin:22px 0 8px">Deployment on CBQ-provided cloud, Qatar</h3>
+  <table><tr><th>Environment</th><th>Where</th><th>Purpose</th><th>Data</th></tr>
+  <tr><td>Development</td><td>Innoval</td><td>Build and unit test</td><td>Synthetic only</td></tr>
+  <tr><td>SIT and UAT</td><td>CBQ cloud, Qatar</td><td>Integration with CBQ sandbox, acceptance</td><td>Synthetic or CBQ test data</td></tr>
+  <tr><td>Production</td><td>CBQ cloud (primary), Qatar</td><td>Live service</td><td>Live</td></tr>
+  <tr><td>Disaster recovery</td><td>CBQ cloud (DR), Qatar</td><td>Warm standby, identical configuration</td><td>Replicated</td></tr></table>
+  <div class="grid3" style="margin-top:14px"><div class="kpi"><b>&lt; 2 h</b><span>Recovery time objective</span></div><div class="kpi"><b>&lt; 15 min</b><span>Recovery point objective</span></div><div class="kpi"><b>99.5%</b><span>Monthly availability commitment</span></div></div>`;
+};
+R.plan=()=>{
+  const rows=[
+    ["Mobilisation and design",1,2,""],["Environments ready on CBQ cloud",3,3,"cbq"],["Build: hub, portals, CBQ adapter",2,5,""],["Build: SAP connector",3,5,""],
+    ["SIT against CBQ sandbox",5,6,""],["Security and performance testing",6,7,""],["UAT and business sign-off",7,7,"cbq"],["Pilot with CBQ-selected customers",7,8,""],["Go-live and hypercare",8,9,""]];
+  const ms=[["M2 Design sign-off",2],["M4 SIT exit",6],["M6 UAT sign-off",7],["M8 Go-live",8],["M9 Operational acceptance",9]];
+  let g=`<div class="h" style="text-align:left">Workstream</div>`+[1,2,3,4,5,6,7,8,9].map(m=>`<div class="h">M${m}</div>`).join("");
+  rows.forEach(r=>{g+=`<div class="lab">${esc(r[0])}</div>`;for(let m=1;m<=9;m++){g+=`<div class="bar ${r[3]}">${m>=r[1]&&m<=r[2]?`<i class="${m===r[1]?"s ":""}${m===r[2]?"e":""}"></i>`:""}</div>`;}});
+  g+=`<div class="lab">Milestones</div>`;for(let m=1;m<=9;m++){const x=ms.find(z=>z[1]===m);g+=`<div class="bar ms">${x?`<i title="${esc(x[0])}"></i>`:""}</div>`;}
+  return narr("Implementation approach and timeline","Phase 1 delivers the hub and the SAP connector: go-live in month 7 to 8, operational acceptance by month 9 from kickoff, given CBQ API specifications and sandbox at kickoff.","plan",true)+
+  `<div class="gantt">${g}</div><div class="legend"><span><i style="background:var(--maroon)"></i>Innoval</span><span><i style="background:var(--sap)"></i>CBQ-led</span><span><i style="border:2px solid var(--ok)"></i>Milestone</span></div>
+  <table style="margin-top:16px"><tr><th>Milestone</th><th>Month</th><th>Signed off by</th></tr>${ms.map(m=>`<tr><td>${esc(m[0])}</td><td>${m[1]}</td><td>${m[0].includes("UAT")?"CBQ business":m[0].includes("SIT")?"CBQ technology":m[0].includes("Go-live")?"CBQ go-live board":m[0].includes("Design")?"CBQ architecture and security":"CBQ operations"}</td></tr>`).join("")}</table>
+  <div class="note">Additional ERP connectors follow on CBQ’s order: about 2 to 3 months each, built on the same SDK and certified with the same test kit. They can run in parallel with Phase 1.</div>`;
+};
+R.why=()=>{
+  const C=[["Not a greenfield build","The hub-and-spoke core already connects SAP to bank APIs in production at two of India’s largest private-sector banks."],
+    ["CBQ stays in control","CBQ’s identity, limits, OTP, Net Banking approval, PKI, SIEM and PAM are reused. The platform never makes an approval decision."],
+    ["One place to change","Banking logic lives only in the platform; connectors stay thin. A CBQ API change touches one adapter, not every ERP."],
+    ["An honest ERP roadmap","SAP S/4HANA and ECC in Phase 1. Every other ERP through a certified framework with fixed unit prices, ordered as demand appears."],
+    ["Traceable end to end","One correlation ID from the SAP voucher to the CBQ transaction and the statement line, visible to CBQ operations."],
+    ["Built for five years","Qatar-resident data, DR to under 2 hours, 99.5% availability, 90-day certification of new ERP releases, source escrow."]];
+  return narr("Why this approach","What sets the proposal apart.","why",false)+`<div class="cards">${C.map(c=>`<div class="card"><h3>${esc(c[0])}</h3><p>${esc(c[1])}</p></div>`).join("")}</div>
+  <p class="foot">All customers, accounts, amounts and references in this demo are illustrative.</p>`;
+};
+
+/* ---------- actions ---------- */
+function ensureCid(){if(!S.cid)S.cid=newCid();}
+const A={
+  submitOnboard(){S.onboard="submitted";S.done.onboard=true;audit("r.alkuwari (customer)","Submitted registration ONB-2026-0042");
+    trace("Portal → Onboarding service","Registration ONB-2026-0042 received","Eligibility pre-checks queued against CBQ customer data",[2]);},
+  rejectInfo(){trace("Admin portal","Officer can request more information; the customer is notified","No change made in this demo",[2]);},
+  approveOnboard(){S.approved=true;S.done.approve=true;audit("s.hamad (CBQ officer)","Approved ONB-2026-0042, tenant TN-0042");
+    trace("Admin portal → Onboarding service","Request approved, tenant TN-0042 created","Row-level isolation key assigned",[2,3]);
+    trace("Platform → CBQ PKI","Connector certificate issued for TN-0042","Key held in CBQ HSM; certificate valid 12 months",[2,4]);},
+  activate(){S.activated=true;audit("SAP Basis (customer)","Entered activation code");
+    trace("SAP add-on → CBQ API gateway","Activation request with one-time code","mTLS with customer certificate from STRUST",[0,1]);
+    trace("Gateway → Connector hub","Connector registered, version 1.4.0","Heartbeat every 5 minutes",[1,2]);},
+  testConn(){S.testOk=true;S.done.activate=true;ensureCid();
+    trace("SAP add-on → Connector hub","GET /v1/accounts/{id}/balance","OAuth token, 15-minute lifetime",[0,1,2]);
+    trace("CBQ API adapter → CBQ","Balance inquiry for QA58…5566 7","200 OK in 182 ms",[2,4]);},
+  send(){S.sent=true;S.done.pay=true;S.cid=newCid();const n=S.pays.filter(p=>p.sel).length;
+    audit("f.haddad (maker)",`Sent batch BT-77310, ${n} payments`);
+    trace("SAP add-on → CBQ API gateway",`POST /v1/payment-batches (${n} payments)`,"Signed payload, idempotency key per document",[0,1]);
+    trace("Payment orchestrator","Schema, entitlement, duplicate and cut-off checks passed","Idempotency keys stored before any CBQ call",[2,3]);},
+  release(){S.released=true;audit("m.nasser (checker)","Released batch BT-77310 in SAP");
+    trace("SAP add-on → Connector hub","Checker release recorded","SAP maker and checker are different users",[0,2]);
+    trace("CBQ API adapter → CBQ","Bulk payment submitted","202 Accepted, approval required: amount above STP limit",[2,4]);},
+  otp(){openOtp();},
+  tick(){S.progress++;const sel=S.pays.filter(p=>p.sel);
+    sel.forEach((p,i)=>{
+      if(p.vendor.startsWith("Lusail")){if(S.progress>=3){p.stage=2;p.bad=true;p.status="Rejected";p.ref="CBQ-R14 beneficiary account closed";}else{p.stage=Math.min(S.progress,2);p.status=LIFE[p.stage];}}
+      else{p.stage=Math.min(S.progress-1+ (i%2===0?1:0),4);if(S.progress>=5)p.stage=4;p.status=p.stage>=4?"Completed":["Sent","Validated","At CBQ","Approval"][Math.max(p.stage,0)];
+        if(p.stage>=4)p.ref="CBQ2611160098"+(i+1);}});
+    if(S.progress===1)trace("CBQ → Status engine","Status events received for BT-77310","Polled every 60 s; event push used where CBQ offers it",[4,2]);
+    if(S.progress===3)trace("CBQ → Status engine","1 payment rejected: CBQ-R14 beneficiary account closed","Reason code mapped and sent to SAP",[4,2]);
+    if(S.progress>=5){S.done.status=true;audit("Platform","Wrote status and bank references to 5 SAP documents");
+      trace("Connector hub → SAP add-on","Status and bank references written back to documents","4 completed, 1 rejected",[2,1,0]);}},
+  stmt(){S.stmt=true;audit("Platform","Retrieved statement 16.11.2026");
+    trace("CBQ API adapter → CBQ","GET statement, QA58…5566 7, 16.11.2026","6 entries; kept only for the reconciliation window",[2,4]);
+    trace("Account services","camt.053 file prepared for SAP import","Customer imports with FF_5 / FEBAN",[2,0]);},
+  recon(){S.recon=true;S.done.recon=true;audit("Platform","Reconciled 6 statement lines");
+    trace("Reconciliation engine","4 matched, 1 exception, 1 receipt","Rules applied in order: reference, then amount + date + beneficiary",[2,3]);},
+  offboard(){S.offboard=true;S.done.ops=true;audit("s.hamad (CBQ officer)","Offboarded Al Noor Trading");
+    trace("Admin portal → Platform","Offboarding: certificate revoked, tokens invalidated","Final reconciliation, data export prepared, deletion scheduled per CBQ policy",[2,4]);},
+  path(){document.querySelectorAll(".flow").forEach(p=>p.classList.toggle("hot",p.dataset.p==="1"&&!p.classList.contains("hot")));}
+};
+function openOtp(){
+  const root=document.getElementById("modalRoot");
+  root.innerHTML=`<div class="modal-back" role="dialog" aria-modal="true" aria-labelledby="otpT"><div class="modal">
+  <h3 id="otpT">CBQ approval</h3><p style="margin:0;color:var(--ink-2)">CBQ sent a one-time password to the registered mobile of m.nasser for batch BT-77310.</p>
+  <div class="otp">${"482916".split("").map(d=>`<span>${d}</span>`).join("")}</div>
+  <div class="toolbar"><div class="sp"></div><button class="btn" data-m="cancel">Cancel</button><button class="btn primary" data-m="ok">Confirm</button></div></div></div>`;
+  root.querySelector('[data-m="ok"]').focus();
+  root.onclick=e=>{const m=e.target.dataset.m;if(!m)return;root.innerHTML="";
+    if(m==="ok"){S.otp=true;S.done.release=true;audit("m.nasser (checker)","Approved BT-77310 with CBQ OTP");
+      trace("SAP add-on → CBQ (via platform)","OTP verified by CBQ","CBQ is the system of record for authorisation",[0,2,4]);render();}};
+}
+
+/* ---------- render ---------- */
+function render(){
+  const cur=route();renderRail(cur);document.querySelector('.shell').classList.toggle('wide',VIEWS.some(v=>v.id===cur));
+  const st=document.getElementById("stage");st.innerHTML=R[cur]();
+  st.querySelectorAll(".box").forEach(b=>{const show=()=>{st.querySelectorAll(".box").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");const c=COMP[b.dataset.c];document.getElementById("detail").innerHTML=`<h3>${esc(c[0])}</h3><p>${esc(c[1])}</p>`;};
+    b.addEventListener("click",show);b.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();show();}});});
+  renderTrace();
+}
+document.getElementById("stage").addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;A[b.dataset.a]();if(b.dataset.a!=="path"&&b.dataset.a!=="otp")render();});
+document.getElementById("stage").addEventListener("change",e=>{const i=e.target.dataset.sel;if(i===undefined)return;S.pays[+i].sel=e.target.checked;render();});
+document.getElementById("resetBtn").addEventListener("click",()=>{S=fresh();location.hash="onboard";render();});
+window.addEventListener("hashchange",()=>{render();document.getElementById("stage").scrollTop=0;});
+S=fresh();render();
+})();
+</script>
+</body>
+</html>
